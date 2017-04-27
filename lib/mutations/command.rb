@@ -56,7 +56,8 @@ module Mutations
     # Instance methods
     def initialize(*args)
       @raw_inputs = args.inject({}.with_indifferent_access) do |h, arg|
-        raise ArgumentError.new("All arguments must be hashes") unless arg.is_a?(Hash)
+        arg = arg.to_unsafe_hash if arg.respond_to?(:to_unsafe_hash)
+        raise ArgumentError.new("All arguments must be hashes")  unless arg.is_a?(Hash)
         h.merge!(arg)
       end
 

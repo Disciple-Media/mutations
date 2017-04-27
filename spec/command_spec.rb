@@ -1,5 +1,6 @@
 require 'spec_helper'
 require 'simple_command'
+require 'parameters'
 
 describe "Command" do
 
@@ -82,6 +83,13 @@ describe "Command" do
 
     it "should merge hashes indifferently" do
       outcome = SimpleCommand.run({:name => "John", :email => "john@gmail.com"}, {"email" => "bob@jones.com", "amount" => 5})
+
+      assert outcome.success?
+      assert_equal ({:name => "John", :email => "bob@jones.com", :amount => 5}).stringify_keys, outcome.result
+    end
+
+    it "should accept Hash-like objects responding to #to_unsafe_hash" do
+      outcome = SimpleCommand.run({:name => "John", :email => "john@gmail.com"}, Parameters.new(:email => "bob@jones.com", :amount => 5))
 
       assert outcome.success?
       assert_equal ({:name => "John", :email => "bob@jones.com", :amount => 5}).stringify_keys, outcome.result
